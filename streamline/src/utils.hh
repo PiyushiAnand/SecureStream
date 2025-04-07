@@ -55,9 +55,9 @@
 
 //SYSTEM-SPECIFIC DEFINES
 #define CACHE_SZ (8*1024*1024)
-#define SYS_FREQ_MHZ (3900)
-#define LLC_MISS_THRESHOLD_CYCLES (180)
-#define SHARED_READONLY_FILE_PATH ("/home/gururaj/Documents/Research/streamline/PUBLIC_ASPLOS21_REPO/streamline_two/shared_readonly_file.txt")
+#define SYS_FREQ_MHZ (3602)
+#define LLC_MISS_THRESHOLD_CYCLES (20)
+#define SHARED_READONLY_FILE_PATH ("/home/user/Desktop/CS773_Project/SecureStream/streamline/shared_readonly_file.txt")
 
 // Other Sizes
 #define PAGE_SZ (4*1024)
