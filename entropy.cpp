@@ -9,7 +9,9 @@
 #include <chrono>
 #include <thread>
 #include <map>
+using namespace std;
 
+double THRESHOLD = 5.05; // Set a threshold for entropy
 int perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
                     int cpu, int group_fd, unsigned long flags) {
     return syscall(__NR_perf_event_open, hw_event, pid, cpu,
@@ -54,7 +56,10 @@ int main() {
     std::vector<long long> samples;
 
     std::cout << "Starting continuous entropy monitoring...\n";
+    double avg_entrpoy = 0;
+    int i=0;
     while (true) {
+        
         long long value = 0;
         ssize_t res = read(fd, &value, sizeof(long long));
         if (res != sizeof(long long)) {
@@ -68,12 +73,23 @@ int main() {
         ioctl(fd, PERF_EVENT_IOC_RESET, 0);
 
         if (samples.size() >= SAMPLE_COUNT) {
+            i++;
             double entropy = compute_entropy(samples);
             std::cout << "Entropy (last " << SAMPLE_COUNT << " samples): "
                       << entropy << " bits\n";
+            avg_entrpoy = avg_entrpoy+entropy;
             samples.clear();
-        }
+            if(i>0&&i%5==0){
+                std::cout << "Average Entropy: " << avg_entrpoy/5 << " bits\n";
+               
+                if(avg_entrpoy/5<THRESHOLD){
+                        cout<<"Potential attack detected!"<<endl;
+                }
+                avg_entrpoy = 0;
+            }
 
+        }
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_INTERVAL_MS));
     }
 

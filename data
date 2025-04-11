@@ -1,0 +1,118 @@
+########################################################################### 
+When no background attack/ application is running 
+Starting continuous entropy monitoring...
+Entropy (last 50 samples): 5.16386 bits
+Entropy (last 50 samples): 5.44386 bits
+Entropy (last 50 samples): 5.14876 bits
+Entropy (last 50 samples): 5.23856 bits
+Entropy (last 50 samples): 5.18876 bits
+Average Entropy: 5.23676 bits
+Entropy (last 50 samples): 5.33366 bits
+Entropy (last 50 samples): 5.44386 bits
+Entropy (last 50 samples): 5.32386 bits
+Entropy (last 50 samples): 4.94876 bits
+Entropy (last 50 samples): 5.25366 bits
+Average Entropy: 5.26076 bits
+Entropy (last 50 samples): 5.22876 bits
+Entropy (last 50 samples): 5.15856 bits
+Entropy (last 50 samples): 5.32386 bits
+Entropy (last 50 samples): 5.18876 bits
+Entropy (last 50 samples): 5.15856 bits
+Average Entropy: 5.2117 bits
+Entropy (last 50 samples): 5.06876 bits
+Entropy (last 50 samples): 5.18876 bits
+Entropy (last 50 samples): 5.18876 bits
+Entropy (last 50 samples): 5.38876 bits
+Entropy (last 50 samples): 5.56386 bits
+Average Entropy: 5.27978 bits
+
+#############################################################################
+When THRESHOLD is 5.05 and streamline attack is running in background
+Starting continuous entropy monitoring...
+Entropy (last 50 samples): 5.18876 bits
+Entropy (last 50 samples): 4.91127 bits
+Entropy (last 50 samples): 4.60837 bits
+Entropy (last 50 samples): 4.91856 bits
+Entropy (last 50 samples): 4.83856 bits
+Average Entropy: 4.8931 bits
+Potential attack detected!
+Entropy (last 50 samples): 4.84637 bits
+Entropy (last 50 samples): 4.96637 bits
+Entropy (last 50 samples): 4.83327 bits
+Entropy (last 50 samples): 4.94876 bits
+Entropy (last 50 samples): 4.98147 bits
+Average Entropy: 4.91525 bits
+Potential attack detected!
+Entropy (last 50 samples): 4.62928 bits
+Entropy (last 50 samples): 4.86147 bits
+Entropy (last 50 samples): 4.83573 bits
+Entropy (last 50 samples): 4.83657 bits
+Entropy (last 50 samples): 5.05366 bits
+Average Entropy: 4.84334 bits
+Potential attack detected!
+Entropy (last 50 samples): 4.95856 bits
+Entropy (last 50 samples): 4.93366 bits
+Entropy (last 50 samples): 5.07657 bits
+Entropy (last 50 samples): 4.97366 bits
+Entropy (last 50 samples): 4.65418 bits
+Average Entropy: 4.91933 bits
+Potential attack detected!
+#################################################################################
+When we run google chrome in background without streamline attack
+
+Starting continuous entropy monitoring...
+Entropy (last 50 samples): 5.42876 bits
+Entropy (last 50 samples): 5.48386 bits
+Entropy (last 50 samples): 5.44386 bits
+Entropy (last 50 samples): 5.64386 bits
+Entropy (last 50 samples): 5.56386 bits
+Average Entropy: 5.51284 bits
+Entropy (last 50 samples): 5.52386 bits
+Entropy (last 50 samples): 5.48386 bits
+Entropy (last 50 samples): 5.56386 bits
+Entropy (last 50 samples): 5.64386 bits
+Entropy (last 50 samples): 5.52386 bits
+Average Entropy: 5.54786 bits
+Entropy (last 50 samples): 5.64386 bits
+Entropy (last 50 samples): 5.60386 bits
+Entropy (last 50 samples): 5.60386 bits
+Entropy (last 50 samples): 5.60386 bits
+Entropy (last 50 samples): 5.60386 bits
+Average Entropy: 5.61186 bits
+Entropy (last 50 samples): 5.56386 bits
+Entropy (last 50 samples): 5.36386 bits
+Entropy (last 50 samples): 5.60386 bits
+Entropy (last 50 samples): 5.56386 bits
+Entropy (last 50 samples): 5.56386 bits
+Average Entropy: 5.53186 bits
+###################################################################################
+When we run both google chrome and streamline attack
+Starting continuous entropy monitoring...
+Entropy (last 50 samples): 5.60386 bits
+Entropy (last 50 samples): 5.19657 bits
+Entropy (last 50 samples): 5.15856 bits
+Entropy (last 50 samples): 5.11856 bits
+Entropy (last 50 samples): 5.07856 bits
+Average Entropy: 5.23122 bits
+Entropy (last 50 samples): 5.28386 bits
+Entropy (last 50 samples): 5.05366 bits
+Entropy (last 50 samples): 4.97366 bits
+Entropy (last 50 samples): 4.86876 bits
+Entropy (last 50 samples): 5.36386 bits
+Average Entropy: 5.10876 bits
+Entropy (last 50 samples): 4.77166 bits
+Entropy (last 50 samples): 5.37366 bits
+Entropy (last 50 samples): 5.44386 bits
+Entropy (last 50 samples): 5.36386 bits
+Entropy (last 50 samples): 5.17366 bits
+Average Entropy: 5.22534 bits
+Entropy (last 50 samples): 5.40386 bits
+Entropy (last 50 samples): 5.32386 bits
+Entropy (last 50 samples): 5.56386 bits
+Entropy (last 50 samples): 5.18876 bits
+Entropy (last 50 samples): 5.37366 bits
+Average Entropy: 5.3708 bits
+##################################################################################
+
+
+
