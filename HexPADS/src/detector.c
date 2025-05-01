@@ -30,50 +30,50 @@
  */
 
 
-double get_entropy(long long data[NR_SAMPLES]) {
+
+ double get_entropy(long long data[NR_SAMPLES]) {
   if (data == NULL) return 0.0;
 
-    // Step 1: Find the range of values in the data
-    long long min_value = data[0], max_value = data[0];
-    for (int i = 0; i < NR_SAMPLES; i++) {
-        if (data[i] < min_value) min_value = data[i];
-        if (data[i] > max_value) max_value = data[i];
-    }
-
-    // Step 2: Create a frequency array based on the range
-    int range = max_value - min_value + 1; // Total unique values
-    int *freq = calloc(range, sizeof(int));  // Automatically initializes to 0
-    if (!freq) {
-        perror("calloc failed");
-        return 0.0;
-    }
-    
-    for(int i=0; i<range; i++) {
-        freq[i] = 0; // Initialize frequency array
-    }
-
-    // Step 3: Calculate frequencies
-    for (int i = 0; i < NR_SAMPLES; i++) {
-        freq[data[i] - min_value]++; // Shift data values to the start of the freq array
-    }
-
-  double entropy = 0.0;
-  double total = (double)NR_SAMPLES;
+  // Step 1: Find min and max
+  long long min_value = data[0], max_value = data[0];
   for (int i = 0; i < NR_SAMPLES; i++) {
+      if (data[i] < min_value) min_value = data[i];
+      if (data[i] > max_value) max_value = data[i];
+  }
+
+  // Step 2: Allocate frequency array
+  int range = max_value - min_value + 1;
+  int *freq = calloc(range, sizeof(int));
+  if (!freq) {
+      perror("calloc failed");
+      return 0.0;
+  }
+
+  // Step 3: Count frequencies
+  for (int i = 0; i < NR_SAMPLES; i++) {
+      freq[data[i] - min_value]++;
+  }
+
+  // Step 4: Compute entropy
+  double entropy = 0.0;
+  double total = (double) NR_SAMPLES;
+  for (int i = 0; i < range; i++) {
       if (freq[i] > 0) {
           double p = freq[i] / total;
-       entropy -= p * log2(p);
-
+          entropy -= p * log2(p);
       }
   }
+
   free(freq);
   return entropy;
 }
 
 
+
 void detector(struct proc *procs) {
   struct proc *loc = procs;
-
+  int sender_pid  = -1;
+  double sender_entropy = 0.0;
   // iterate over all running processes
   while (loc != NULL) {
   //  printf("[i] PID %d, '%s' (%d)\n", loc->pid, loc->cmd, loc->status);
@@ -91,7 +91,8 @@ void detector(struct proc *procs) {
         caccess += loc->psample->cache_access[i];
         cmiss += loc->psample->cache_miss[i];
         minflt += loc->psample->minflt[i];
-        misses[i] = cmiss;
+        misses[i] = loc->psample->cache_miss[i]; // normalize
+
       }
       // for(int i=0; i<NR_SAMPLES; ++i) {
       //   printf("%lld ", misses[i]);
@@ -113,14 +114,18 @@ void detector(struct proc *procs) {
       /* cache attack detection */
       //print entropy
       
-   //   printf("[i] PID %d executed %lld instructions with %lld/%lld cache misses (%f ratio), %lu page faults (on average).\n", loc->pid, icount, cmiss, caccess, (double)cmiss/(double)caccess, minflt);
+    //  printf("[i] PID %d executed %lld instructions with %lld/%lld cache misses (%f ratio), %lu page faults (on average).\n", loc->pid, icount, cmiss, caccess, (double)cmiss/(double)caccess, minflt);
       double cmissrate = (double)cmiss/(double)caccess;
+
+      // loge("PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
     //  if(cmissrate>0.7){
       //  printf("[%d] PID had %f entropy %s\n", loc->pid,entropy,loc->cmd);
     //    }
 
-    if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01&& entropy > 0.15) {
+    if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01 && entropy > 0.1) {
       loge("[i] Potential streamline attack detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
+      sender_pid = loc->pid;
+      sender_entropy = entropy;
       // printf("entropy: %f",entropy);
       //  mitigate(loc);
     }
@@ -130,7 +135,9 @@ void detector(struct proc *procs) {
         // printf("entropy: %f",entropy);
         //  mitigate(loc);
       }
-
+      else if(sender_pid!=-1&& cmiss < 100 && (sender_entropy - entropy < 0.1)) {
+        loge("[i] Potential streamline attack RECEIVER detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
+      }
       /* CAIN detection */
       if (
         (
