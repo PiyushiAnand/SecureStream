@@ -116,7 +116,7 @@ struct p_sample {
   long minflt[NR_SAMPLES];
 };
 
-#define log(fmt, ...) \
+#define loge(fmt, ...) \
   do { if (DOLOG) fprintf(stderr, fmt, ##__VA_ARGS__); } while (0)
 
 #define debug(fmt, ...) \

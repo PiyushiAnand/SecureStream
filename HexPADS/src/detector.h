@@ -20,4 +20,7 @@
 /**
  * detector - scan all processes and search for attacks
  */
+#include <math.h>
 void detector(struct proc *procs);
+double get_entropy(long long data[NR_SAMPLES]);
+

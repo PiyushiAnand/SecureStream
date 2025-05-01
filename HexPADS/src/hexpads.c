@@ -30,7 +30,7 @@
 struct proc *procs = NULL;
 
 int main(int argc, char *argv[]) {
-  log("[+] Initializing process list and performance counters\n");
+  loge("[+] Initializing process list and performance counters\n");
   
   while (1) {
     /* update process list */

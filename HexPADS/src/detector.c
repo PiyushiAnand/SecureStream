@@ -28,20 +28,76 @@
 /**
  * detector - scan all processes and search for attacks
  */
+
+
+double get_entropy(long long data[NR_SAMPLES]) {
+  if (data == NULL) return 0.0;
+
+    // Step 1: Find the range of values in the data
+    long long min_value = data[0], max_value = data[0];
+    for (int i = 0; i < NR_SAMPLES; i++) {
+        if (data[i] < min_value) min_value = data[i];
+        if (data[i] > max_value) max_value = data[i];
+    }
+
+    // Step 2: Create a frequency array based on the range
+    int range = max_value - min_value + 1; // Total unique values
+    int *freq = calloc(range, sizeof(int));  // Automatically initializes to 0
+    if (!freq) {
+        perror("calloc failed");
+        return 0.0;
+    }
+    
+    for(int i=0; i<range; i++) {
+        freq[i] = 0; // Initialize frequency array
+    }
+
+    // Step 3: Calculate frequencies
+    for (int i = 0; i < NR_SAMPLES; i++) {
+        freq[data[i] - min_value]++; // Shift data values to the start of the freq array
+    }
+
+  double entropy = 0.0;
+  double total = (double)NR_SAMPLES;
+  for (int i = 0; i < NR_SAMPLES; i++) {
+      if (freq[i] > 0) {
+          double p = freq[i] / total;
+       entropy -= p * log2(p);
+
+      }
+  }
+  free(freq);
+  return entropy;
+}
+
+
 void detector(struct proc *procs) {
   struct proc *loc = procs;
 
   // iterate over all running processes
   while (loc != NULL) {
+  //  printf("[i] PID %d, '%s' (%d)\n", loc->pid, loc->cmd, loc->status);
     if (loc->status == STATUS_READY) {
+      // printf("%s\n",loc->cmd);
       long long icount = 0, cmiss = 0, caccess = 0;
       long minflt;
+      long long misses[NR_SAMPLES];
+      if(loc->psample == NULL) {
+        loc = loc->next;
+        continue;
+      }
       for (int i = 0; i<NR_SAMPLES; ++i) {
         icount += loc->psample->instr[i];
         caccess += loc->psample->cache_access[i];
         cmiss += loc->psample->cache_miss[i];
         minflt += loc->psample->minflt[i];
+        misses[i] = cmiss;
       }
+      // for(int i=0; i<NR_SAMPLES; ++i) {
+      //   printf("%lld ", misses[i]);
+      // }
+     // printf("\n");
+      double entropy = get_entropy(misses);
       icount /= NR_SAMPLES;
       caccess /= NR_SAMPLES;
       cmiss /= NR_SAMPLES;
@@ -55,10 +111,24 @@ void detector(struct proc *procs) {
       //printf("[i] PID %d executed %lld instructions with %lld/%lld cache misses (%f ratio), %lu page faults (on average).\n", loc->pid, icount, cmiss, caccess, (double)cmiss/(double)caccess, minflt);
 
       /* cache attack detection */
+      //print entropy
+      
+   //   printf("[i] PID %d executed %lld instructions with %lld/%lld cache misses (%f ratio), %lu page faults (on average).\n", loc->pid, icount, cmiss, caccess, (double)cmiss/(double)caccess, minflt);
       double cmissrate = (double)cmiss/(double)caccess;
-      if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01) {
-        log("[i] Potential cache attack detected! PID: %d, '%s' (%f missrate, %lld misses) fltrate %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, fltrate, pmissrate);
-        mitigate(loc);
+    //  if(cmissrate>0.7){
+      //  printf("[%d] PID had %f entropy %s\n", loc->pid,entropy,loc->cmd);
+    //    }
+
+    if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01&& entropy > 0.15) {
+      loge("[i] Potential streamline attack detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
+      // printf("entropy: %f",entropy);
+      //  mitigate(loc);
+    }
+
+      else if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01) {
+        loge("[i] Potential cache attack detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
+        // printf("entropy: %f",entropy);
+        //  mitigate(loc);
       }
 
       /* CAIN detection */
@@ -73,7 +143,7 @@ void detector(struct proc *procs) {
           ( lasttwo > 256000 )
         ) 
         ) {
-        log("[i] Potential CAIN detected. PID: %d, '%s' (page misses: %ld/%ld, (%f) cache misses: %lld, cache miss rate: %f, page fault miss rate: %f).\n", loc->pid, loc->cmd, loc->psample->minflt[loc->psample->ringloc], loc->psample->minflt[old], fltrate, loc->psample->cache_miss[loc->psample->ringloc], cmissrate, pmissrate);
+        loge("[i] Potential CAIN detected. PID: %d, '%s' (page misses: %ld/%ld, (%f) cache misses: %lld, cache miss rate: %f, page fault miss rate: %f).\n", loc->pid, loc->cmd, loc->psample->minflt[loc->psample->ringloc], loc->psample->minflt[old], fltrate, loc->psample->cache_miss[loc->psample->ringloc], cmissrate, pmissrate);
         mitigate(loc);
       }
       //if (strncmp(loc->cmd, "anteater", 8) == 0) {

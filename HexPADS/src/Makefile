@@ -5,7 +5,7 @@ FILES=hexpads.c readproc.c readperfctrs.c detector.c mitigator.c
 
 .PHONY=all
 all:
-	$(CC) $(OPT) $(FILES) -o hexpads
+	$(CC) $(OPT) $(FILES) -o hexpads -lm
 
 .PHONE=clean
 clean:

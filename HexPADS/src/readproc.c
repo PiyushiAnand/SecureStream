@@ -135,14 +135,14 @@ struct proc *proc_scan(struct proc *procs) {
 
     // Find or create proc entry
     if (unlikely(lproc!=NULL && pid < lproc->pid)) {
-      log("[e] Unordered PIDs encountered.\n");
+      loge("[e] Unordered PIDs encountered.\n");
       lproc = procs;
     }
 
     int count = 0;
     while (lproc != NULL && lproc->pid < pid) {
       if (count++ > 0) {
-        log("[-] Process died: %d, looking for %d.\n", lproc->pid, pid);
+        loge("[-] Process died: %d, looking for %d.\n", lproc->pid, pid);
         prev->next = lproc->next;
         perfctr_cleanup(lproc);
         // TODO: more cleanup needed? (e.g., through callback for perfmon data?)
@@ -155,7 +155,7 @@ struct proc *proc_scan(struct proc *procs) {
     }
 
     if (lproc == NULL || lproc->pid != pid) {
-      log("[+] Process created for pid %d.\n", pid);
+      loge("[+] Process created for pid %d.\n", pid);
       struct proc *loc = (struct proc*)malloc(sizeof(struct proc));
       bzero(loc, sizeof(struct proc));
       loc->pid = pid;

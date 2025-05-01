@@ -58,7 +58,7 @@ void perfctr_init(struct proc *prc) {
   // activate performance counters
   // FIXME for production we must trace all processes!
   // for now, restrict tracing to uid '1000' and programs that start with pmontest
-  if (prc->uid == 1000) { // && !strncmp(prc->cmd, "pmontest", 8)) {
+  if (prc->uid == 1000 || prc->uid == 0) { // && !strncmp(prc->cmd, "pmontest", 8)) {
     prc->psample = (struct p_sample*)malloc(sizeof(struct p_sample));
     bzero(prc->psample, sizeof(struct p_sample));
 
@@ -129,6 +129,10 @@ void perfctr_scan(struct proc *procs) {
   // iterate over all running processes
   while (loc != NULL) {
     if (loc->status == STATUS_READY || loc->status == STATUS_PERFCTR) {
+     if(loc->pfd_instr == -1) {
+        loc = loc->next;
+        continue;
+      }
       long long icount, cmiss, caccess;
       long oldringloc;
 

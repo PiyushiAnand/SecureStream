@@ -34,13 +34,13 @@
 void mitigate(struct proc *badp) {
 #ifdef MITIGATESLOW
   setpriority(PRIO_PROCESS, badp->pid, 20);
-  log("Slowed down process %d\n", badp->pid);
+  loge("Slowed down process %d\n", badp->pid);
 #else
 #ifdef MITIGATESTOP
   signal(badp->pid, SIGSTOP);
-  log("Stopped process %d\n", badp->pid);
+  loge("Stopped process %d\n", badp->pid);
 #else
-  log("No mitigation activated. %d keeps running\n", badp->pid);
+  loge("No mitigation activated. %d keeps running\n", badp->pid);
 #endif  // MITIGATESTOP
 #endif  // MITIGATESLOW
 }
