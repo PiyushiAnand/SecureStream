@@ -6,7 +6,7 @@
 #include "utils.hh" //Header for Streamline defines.
 #include "fr_util.hh" //Header for Flush+Reload Handshake. (from "https://github.com/yshalabi/covert-channel-tutorial")
 #include <sys/wait.h>  // Required for wait()
-#define NUM_CHILDREN 10 // Number of children to fork
+#define NUM_CHILDREN 2 // Number of children to fork
 pid_t pids[NUM_CHILDREN];
 /* 
  * Function to send 0/1 via Flush+Reload channel to Receiver (for Initial Handshake)
