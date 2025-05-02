@@ -158,7 +158,7 @@ void detector(struct proc *procs) {
       //  printf("[%d] PID had %f entropy %s\n", loc->pid,entropy,loc->cmd);
     //    }
 
-    if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01 && entropy > 0.3) {
+    if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01 && entropy > 0.5 && entropy < 1.05) {
       loge("[i] Potential streamline attack detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
       sender_pid = loc->pid;
       sender_entropy = entropy;
@@ -166,7 +166,7 @@ void detector(struct proc *procs) {
       //  mitigate(loc);
     }
 
-      else if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01 && (entropy<0.3|| entropy>1.0)) {
+      else if (cmissrate > 0.7 && cmiss > 100000 && fltrate < 0.01 && (entropy<0.5|| entropy>1.05)) {
         loge("[i] Potential cache attack detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
         // printf("entropy: %f",entropy);
         //  mitigate(loc);

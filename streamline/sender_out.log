@@ -45,3 +45,24 @@ Sender Process - PID:6173, TID:6173, CPU:1
 policy=SCHED_FIFO, priority=99
 Sender Ready: Done Initial Sync
 Sender finished
+Streamline Covert Channel Sender with Num_Bits:1000000, Random Payload, LLC-Hit-Threshold-Comm:20 cycles. LLC-Hit-Threshold-Sync:20 cycles.  Start Tx-Rx-Delay-Cycles: 250000
+Array Size: 67108864 bytes (0.06 GB). Starting index is: 104 (42th page)
+Other Data-Structures Sizes: rx_time_obs:7.629395 MB, tx_payload:0.95 MB, rx_payload:0.95 MB.
+Sender Process - PID:8730, TID:8730, CPU:1
+policy=SCHED_FIFO, priority=99
+Sender Ready: Done Initial Sync
+Sender finished
+Streamline Covert Channel Sender with Num_Bits:1000000, Random Payload, LLC-Hit-Threshold-Comm:20 cycles. LLC-Hit-Threshold-Sync:20 cycles.  Start Tx-Rx-Delay-Cycles: 250000
+Array Size: 67108864 bytes (0.06 GB). Starting index is: 104 (42th page)
+Other Data-Structures Sizes: rx_time_obs:7.629395 MB, tx_payload:0.95 MB, rx_payload:0.95 MB.
+Sender Process - PID:4412, TID:4412, CPU:1
+policy=SCHED_FIFO, priority=99
+Sender Ready: Done Initial Sync
+Sender finished
+Streamline Covert Channel Sender with Num_Bits:1000000, Random Payload, LLC-Hit-Threshold-Comm:20 cycles. LLC-Hit-Threshold-Sync:20 cycles.  Start Tx-Rx-Delay-Cycles: 250000
+Array Size: 67108864 bytes (0.06 GB). Starting index is: 104 (42th page)
+Other Data-Structures Sizes: rx_time_obs:7.629395 MB, tx_payload:0.95 MB, rx_payload:0.95 MB.
+Sender Process - PID:8307, TID:8307, CPU:1
+policy=SCHED_FIFO, priority=99
+Sender Ready: Done Initial Sync
+Sender finished
