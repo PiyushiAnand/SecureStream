@@ -135,7 +135,7 @@ void detector(struct proc *procs) {
         // printf("entropy: %f",entropy);
         //  mitigate(loc);
       }
-      else if(sender_pid!=-1&& cmiss < 100 && (sender_entropy - entropy < 0.1)) {
+      else if(sender_pid!=-1 && cmiss < 100&&entropy>0.1) {
         loge("[i] Potential streamline attack RECEIVER detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
       }
       /* CAIN detection */
