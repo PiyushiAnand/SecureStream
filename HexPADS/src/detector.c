@@ -29,44 +29,80 @@
  * detector - scan all processes and search for attacks
  */
 
+#define NUM_BINS 100
 
+double get_entropy(long long data[NR_SAMPLES]) {
+    if (data == NULL) return 0.0;
 
- double get_entropy(long long data[NR_SAMPLES]) {
-  if (data == NULL) return 0.0;
+    // Step 1: Find min and max
+    long long min_value = data[0], max_value = data[0];
+    for (int i = 0; i < NR_SAMPLES; i++) {
+        if (data[i] < min_value) min_value = data[i];
+        if (data[i] > max_value) max_value = data[i];
+    }
 
-  // Step 1: Find min and max
-  long long min_value = data[0], max_value = data[0];
-  for (int i = 0; i < NR_SAMPLES; i++) {
-      if (data[i] < min_value) min_value = data[i];
-      if (data[i] > max_value) max_value = data[i];
-  }
+    if (min_value == max_value) return 0.0; // No variation => entropy = 0
 
-  // Step 2: Allocate frequency array
-  int range = max_value - min_value + 1;
-  int *freq = calloc(range, sizeof(int));
-  if (!freq) {
-      perror("calloc failed");
-      return 0.0;
-  }
+    // Step 2: Initialize bins
+    int bins[NUM_BINS] = {0};
 
-  // Step 3: Count frequencies
-  for (int i = 0; i < NR_SAMPLES; i++) {
-      freq[data[i] - min_value]++;
-  }
+    // Step 3: Bin the data
+    for (int i = 0; i < NR_SAMPLES; i++) {
+        int bin_index = (int)((double)(data[i] - min_value) / (max_value - min_value) * (NUM_BINS - 1));
+        bins[bin_index]++;
+    }
 
-  // Step 4: Compute entropy
-  double entropy = 0.0;
-  double total = (double) NR_SAMPLES;
-  for (int i = 0; i < range; i++) {
-      if (freq[i] > 0) {
-          double p = freq[i] / total;
-          entropy -= p * log2(p);
-      }
-  }
+    // Step 4: Compute entropy
+    double entropy = 0.0;
+    double total = (double) NR_SAMPLES;
+    for (int i = 0; i < NUM_BINS; i++) {
+        if (bins[i] > 0) {
+            double p = bins[i] / total;
+            entropy -= p * log2(p);
+        }
+    }
 
-  free(freq);
-  return entropy;
+    return entropy;
 }
+
+
+
+//  double get_entropy(long long data[NR_SAMPLES]) {
+//   if (data == NULL) return 0.0;
+
+//   // Step 1: Find min and max
+//   long long min_value = data[0], max_value = data[0];
+//   for (int i = 0; i < NR_SAMPLES; i++) {
+//       if (data[i] < min_value) min_value = data[i];
+//       if (data[i] > max_value) max_value = data[i];
+//   }
+
+//   // Step 2: Allocate frequency array
+//   int range = max_value - min_value + 1;
+//   int *freq = calloc(range, sizeof(int));
+//   if (!freq) {
+//       perror("calloc failed");
+//       return 0.0;
+//   }
+
+//   // Step 3: Count frequencies
+//   for (int i = 0; i < NR_SAMPLES; i++) {
+//       freq[data[i] - min_value]++;
+//   }
+
+//   // Step 4: Compute entropy
+//   double entropy = 0.0;
+//   double total = (double) NR_SAMPLES;
+//   for (int i = 0; i < range; i++) {
+//       if (freq[i] > 0) {
+//           double p = freq[i] / total;
+//           entropy -= p * log2(p);
+//       }
+//   }
+
+//   free(freq);
+//   return entropy;
+// }
 
 
 
@@ -91,9 +127,9 @@ void detector(struct proc *procs) {
         caccess += loc->psample->cache_access[i];
         cmiss += loc->psample->cache_miss[i];
         minflt += loc->psample->minflt[i];
-        misses[i] = loc->psample->cache_miss[i]; // normalize
-
+        misses[i] = loc->psample->cache_miss[i];
       }
+     
       // for(int i=0; i<NR_SAMPLES; ++i) {
       //   printf("%lld ", misses[i]);
       // }
@@ -135,7 +171,7 @@ void detector(struct proc *procs) {
         // printf("entropy: %f",entropy);
         //  mitigate(loc);
       }
-      else if(sender_pid!=-1 && cmiss < 100&&entropy>0.1) {
+      else if(sender_pid!=-1 && (sender_entropy-entropy)<0.5) {
         loge("[i] Potential streamline attack RECEIVER detected! PID: %d, '%s', (%f missrate, %lld misses) entropy %f pmissrate %f\n", loc->pid, loc->cmd, cmissrate, cmiss, entropy, pmissrate);
       }
       /* CAIN detection */

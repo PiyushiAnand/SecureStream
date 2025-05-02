@@ -5,7 +5,9 @@
 
 #include "utils.hh" //Header for Streamline defines.
 #include "fr_util.hh" //Header for Flush+Reload Handshake. (from "https://github.com/yshalabi/covert-channel-tutorial")
-
+#include <sys/wait.h>  // Required for wait()
+#define NUM_CHILDREN 10 // Number of children to fork
+pid_t pids[NUM_CHILDREN];
 /* 
  * Function to send 0/1 via Flush+Reload channel to Receiver (for Initial Handshake)
  * For a predefined clock length,
@@ -320,7 +322,9 @@ int main(int argc, char **argv)
 
     // Initial Sync Done
     printf("Sender Ready: Done Initial Sync\n");
-
+for(int i=0;i<NUM_CHILDREN;i++){
+ pids[i] = fork(); 
+  if(pids[i] == 0){
 
     // ----------- START STREAMLINE --------------------
 
@@ -481,7 +485,8 @@ int main(int argc, char **argv)
 #endif
       }            
     }
-
+}
+}
     printf("Sender finished\n");
     return 0;
 }
